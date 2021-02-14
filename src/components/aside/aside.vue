@@ -66,8 +66,7 @@ export default {
 
     .aside-li {
       .title {
-        margin: 0;
-        margin-bottom: 5px;
+        margin: 0 0 5px;
         height: 30px;
         line-height: 30px;
         padding: 10px 0;

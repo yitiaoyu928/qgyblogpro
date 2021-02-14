@@ -13,7 +13,8 @@
                      class="username"
                      v-model="username"
                      autocomplete="off"
-                     @change="checkVal($event)"/>
+                     @blur="checkVal($event)"
+                     @input="deBounce($event)"/>
               <span class="user-name">用户名</span>
             </label>
             <span class="hint" :class="{'error':nameIsError}">{{nameHint}}</span>
@@ -26,13 +27,14 @@
                      id="pass"
                      class="pass"
                      v-model="pass"
-                     @change="checkVal($event)"/>
+                     @blur="checkVal($event)"
+                     @input="deBounce($event)"/>
               <span class="user-pass">密码</span>
             </label>
             <span class="hint" :class="{'error':passIsError}">{{passHint}}</span>
           </div>
           <div class="button-area">
-            <input type="button" value="登录" name="login" class="submit-button"/>
+            <input type="button" value="登录" name="login" @click="userLogin" class="submit-button"/>
             <router-link to="/operation/register" class="register-link">没有账号？去注册一个吧</router-link>
           </div>
         </div>
@@ -42,6 +44,7 @@
 </template>
 
 <script>
+let timer = null;
 export default {
   name: "login",
   data() {
@@ -56,16 +59,52 @@ export default {
   },
   methods: {
     checkVal(e) {
-      if (this.username !== "") {
-        e.target.nextSibling.classList.add("input-not-null");
-      } else if (this.username !== "" && e.target.nextSibling.classList.contains("input-not-null")) {
+      // 检测username/pass里面的span是否存在获取焦点样式如果有则删除，没有则添加
+      if (this.username === "" && e.target.nextSibling.classList.contains("input-not-null")) {
         e.target.nextSibling.classList.remove("input-not-null");
+        return;
       }
-      if (this.pass !== "") {
-        e.target.nextSibling.classList.add("input-not-null");
-      } else if (this.pass !== "" && e.target.nextSibling.classList.contains("input-not-null")) {
+      if (this.pass === "" && e.target.nextSibling.classList.contains("input-not-null")) {
         e.target.nextSibling.classList.remove("input-not-null");
+        return;
       }
+      if (this.username !== "" || this.pass!=="") {
+        e.target.nextSibling.classList.add("input-not-null");
+      }
+    },
+    userLogin() {
+      // this.$axios.get("http://www.qgy.com/userLogin.php",{
+      //   params:{
+      //     username:this.username,
+      //     password:this.pass
+      //   }
+      // }).then(res=>{
+      //   console.log(res);
+      // })
+      sessionStorage.setItem("flags","1");
+      this.$router.push("/");
+    },
+    // 防抖
+    deBounce(e) {
+      if(timer) {
+        clearTimeout(timer);
+        timer = null;
+        return;
+      }
+      if(e.target.type) {
+        timer=setTimeout(()=>{
+          // this.validatorValue(this.username,usernamePattern);
+          clearTimeout(timer);
+          timer = null;
+        },500)
+      }else {
+        timer=setTimeout(()=>{
+          this.validatorValue(this.pass);
+          clearTimeout(timer);
+          timer = null;
+        },500)
+      }
+
     }
   }
 }

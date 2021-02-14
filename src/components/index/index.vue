@@ -19,7 +19,10 @@
 
 <script>
 export default {
-  name: "index"
+  name: "index",
+  created() {
+
+  }
 }
 </script>
 

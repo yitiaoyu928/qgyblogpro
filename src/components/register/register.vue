@@ -13,7 +13,8 @@
                      class="username"
                      v-model="username"
                      autocomplete="off"
-                     @change="checkVal($event)"/>
+                     @change="checkVal($event)"
+                     @input="debounce(validatorUsername)"/>
               <span class="user-name">用户名</span>
             </label>
             <span class="hint" :class="{'error':nameIsError}">{{nameHint}}</span>
@@ -26,7 +27,8 @@
                      id="pass"
                      class="pass"
                      v-model="pass"
-                     @change="checkVal($event)"/>
+                     @change="checkVal($event)"
+                    @input="debounce(validatorPass)"/>
               <span class="user-pass">密码</span>
             </label>
             <span class="hint" :class="{'error':passIsError}">{{passHint}}</span>
@@ -39,7 +41,8 @@
                      id="passAgain"
                      class="pass-again"
                      v-model="passAgain"
-                     @change="checkVal($event)"/>
+                     @blur="checkVal($event)"
+              @input="debounce(validatorPassAgain)"/>
               <span class="user-pass-again">再次输入密码</span>
             </label>
             <span class="hint" :class="{'error':passAgainIsError}">{{passAgainHint}}</span>
@@ -52,13 +55,14 @@
                      id="email"
                      class="email"
                      v-model="email"
-                     @change="checkVal($event)"/>
+                     @blur="checkVal($event)"
+              @input="debounce(validatorEmail)"/>
               <span class="user-email">邮箱输入密码</span>
             </label>
             <span class="hint" :class="{'error':emailIsError}">{{emailHint}}</span>
           </div>
           <div class="button-area">
-            <input type="button" value="注册" name="register" class="submit-button"/>
+            <input type="button" value="注册" name="register" class="submit-button" @click="userRegist"/>
             <router-link to="/operation/login" class="login-link">已有账号？去登录交流吧</router-link>
           </div>
         </div>
@@ -68,6 +72,7 @@
 </template>
 
 <script>
+let timer = null;
 export default {
   name: "register",
   data() {
@@ -88,25 +93,97 @@ export default {
   },
   methods: {
     checkVal(e) {
-      if (this.username !== "") {
-        e.target.nextSibling.classList.add("input-not-null");
-      } else if (this.username !== "" && e.target.nextSibling.classList.contains("input-not-null")) {
+      if (this.username === "" && e.target.nextSibling.classList.contains("input-not-null")) {
         e.target.nextSibling.classList.remove("input-not-null");
+        return;
       }
-      if (this.pass !== "") {
-        e.target.nextSibling.classList.add("input-not-null");
-      } else if (this.pass !== "" && e.target.nextSibling.classList.contains("input-not-null")) {
+      if (this.pass === "" && e.target.nextSibling.classList.contains("input-not-null")) {
         e.target.nextSibling.classList.remove("input-not-null");
+        return;
       }
-      if (this.passAgain !== "") {
-        e.target.nextSibling.classList.add("input-not-null");
-      } else if (this.passAgain !== "" && e.target.nextSibling.classList.contains("input-not-null")) {
+      if (this.passAgain === "" && e.target.nextSibling.classList.contains("input-not-null")) {
         e.target.nextSibling.classList.remove("input-not-null");
+        return;
       }
-      if (this.email !== "") {
-        e.target.nextSibling.classList.add("input-not-null");
-      } else if (this.email !== "" && e.target.nextSibling.classList.contains("input-not-null")) {
+      if (this.email === "" && e.target.nextSibling.classList.contains("input-not-null")) {
         e.target.nextSibling.classList.remove("input-not-null");
+        return;
+      }
+      if (this.email !== "" || this.username !== "" || this.passAgain !== "" || this.pass !== "") {
+        e.target.nextSibling.classList.add("input-not-null");
+      }
+    },
+
+    userRegist() {
+      // URLSearchParams传递POST参数
+      let param = new URLSearchParams();
+      param.append("username",this.username);
+      param.append("pw",this.pass);
+      param.append("passAgain",this.passAgain);
+      param.append("email",this.email);
+      this.$axios({
+        method:"post",
+        url:"http://www.qgy.com/userRegist.php",
+        data:param
+      }).then(res=>{
+        console.log(res)
+      })
+    },
+    //防抖插件
+    debounce(func) {
+      if(timer) {
+        clearTimeout(timer);
+        timer = null;
+        return;
+      }
+      timer = setTimeout(()=>{
+        func();
+        clearTimeout(timer);
+        timer = null;
+      },300)
+    },
+    // 验证用户名是否以字母开头的4，16位字符串
+    validatorUsername() {
+      let usernamePattern = /^[a-zA-Z]\w{4,16}$/;
+      if(usernamePattern.test(this.username)) {
+        this.nameHint = "恭喜你，账号符合规范";
+        this.nameIsError = false;
+      }else {
+        this.nameHint = "账号应该是字母开头的字符串";
+        this.nameIsError = true;
+      }
+    },
+    // 验证密码是否为6-16位字母数字组合
+    validatorPass() {
+      let passPattern = /^\w{6,16}$/;
+      if(passPattern.test(this.pass)) {
+          this.passHint = "恭喜你，密码符合规范";
+          this.passIsError = false;
+      }
+      else {
+        this.passHint = "密码长度似乎不够";
+        this.passIsError = true;
+      }
+    },
+    // 验证是否与上一次密码一致
+    validatorPassAgain() {
+       if(this.pass === this.passAgain) {
+         this.passAgainHint = "与上次输入密码一致";
+         this.passAgainIsError = false;
+       }else {
+         this.passAgainHint = "两次密码输入不一致哦";
+         this.passAgainIsError = true;
+       }
+    },
+    validatorEmail() {
+      // 一串未知的正则，待研究
+      let emailPattern = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?$/;
+      if(emailPattern.test(this.email)) {
+        this.emailHint = "邮箱符合规范";
+        this.emailIsError = false;
+      }else {
+        this.emailHint = "请输入正确的邮箱";
+        this.emailIsError = true;
       }
     }
   }

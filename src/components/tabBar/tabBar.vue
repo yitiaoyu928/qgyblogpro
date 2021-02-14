@@ -33,6 +33,11 @@ export default {
   components: {
     "logins": logins,
     "un-logins": unLogins
+  },
+  created() {
+    if(sessionStorage.getItem("flags")==="1") {
+      this.login = true;
+    }
   }
 }
 </script>
