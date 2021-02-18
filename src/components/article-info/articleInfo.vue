@@ -1,5 +1,5 @@
 <template>
-  <div class="article-info">
+  <div class="article-info" v-loading:[show]>
     <div class="article-box">
       <div class="title-box">
         <h2 class="article-title">这是文章的标题</h2>
@@ -26,7 +26,8 @@ export default {
     return {
       article_content: "",
       id: this.$route.params.id,
-      article_list: {}
+      article_list: {},
+      show: false
     }
   },
   created() {
@@ -40,20 +41,24 @@ export default {
   },
   methods: {
     async getArticleInfo() {
-      let {data} = await this.$axios({
-        url: "http://www.qgy.com/getArticleInfo.php",
-        method: "get",
-        params: {
-          article_id: this.$route.params.id
-        }
-      })
-      this.article_content = data.article_content;
+      this.show = true;
+      setTimeout(async ()=>{
+        let {data} = await this.$axios({
+          url: "http://www.qgy.com/getArticleInfo.php",
+          method: "get",
+          params: {
+            article_id: this.$route.params.id
+          }
+        })
+        this.article_content = data.article_content;
+        this.show = false;
+      },3000)
+
     },
     getStoreInfo() {
       let {classify, date_time} = this.$store.state.article_list[this.id - 1];
       this.article_list.classify = classify;
       this.article_list.date_time = date_time;
-      console.log(this.article_list)
     }
   },
   components: {
@@ -79,18 +84,22 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
     .article-infos {
       display: flex;
       justify-content: space-between;
       position: relative;
+
       .article-classify, .article-date {
         padding: 0 10px;
       }
+
       .article-classify {
         position: relative;
-       width: 30px;
+        width: 30px;
+
         &::after {
-          content:"";
+          content: "";
           position: absolute;
           bottom: 0;
           right: 0;

@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <router-view></router-view>
+    <button @click="show = !show">显示浮层</button>
   </div>
 </template>
 
@@ -11,8 +12,10 @@ export default {
   created() {
     this.$store.dispatch("getArticleList")
   },
-  methods: {
-
+  data() {
+    return {
+      show:true
+    }
   }
 }
 </script>

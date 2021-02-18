@@ -8,6 +8,7 @@ import aisde from './components/aside/aside.vue';
 import commonHeader from "./components/common-header/commonHeader.vue";
 import router from "./router/router.js";
 import store from "./vuex/store.js";
+
 Vue.config.productionTip = false
 Vue.component('my-button', Button)
 Vue.component('my-header', Header)
@@ -17,10 +18,46 @@ Vue.component('my-footer', Footer)
 Vue.component("my-container", Container)
 Vue.component("my-input", Input);
 Vue.component("tab-bar", tabBar)
-Vue.component("my-content",content)
-Vue.component("aisder",aisde)
-Vue.component("common-header",commonHeader);
+Vue.component("my-content", content)
+Vue.component("aisder", aisde)
+Vue.component("common-header", commonHeader);
+Vue.directive("loading", {
+  bind(el, binding) {
+    if (binding.arg) {
+      let div = document.createElement("div");
+      div.id = "mask";
+      div.style.position = "absolute";
+      div.style.backgroundColor = "rgba(255,255,255,0.7)";
+      div.style.top = "0";
+      div.style.right = "0";
+      div.style.bottom = "0";
+      div.style.left = "0";
+      div.style.textAlign = "center";
+      div.textContent = "显示中。。。。。";
+      el.appendChild(div);
+    }
+  },
+  update(el, binding) {
+    if (!binding.arg) {
+      let div = document.getElementById("mask");
+      el.removeChild(div);
+    } else {
+      let div = document.createElement("div");
+      div.id = "mask";
+      div.style.position = "absolute";
+      div.style.backgroundColor = "rgba(255,255,255,0.7)";
+      div.style.top = "0";
+      div.style.right = "0";
+      div.style.bottom = "0";
+      div.style.left = "0";
+      div.style.textAlign = "center";
+      div.textContent = "显示中。。。。。";
+      el.appendChild(div);
+    }
+  }
+})
 import axios from "axios";
+
 Vue.prototype.$axios = axios;
 new Vue({
   render: h => h(App),
