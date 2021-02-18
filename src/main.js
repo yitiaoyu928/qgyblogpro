@@ -32,12 +32,14 @@ Vue.directive("loading", {
       div.style.right = "0";
       div.style.bottom = "0";
       div.style.left = "0";
+      div.style.zIndex = "99999";
       div.style.textAlign = "center";
       div.textContent = "显示中。。。。。";
       el.appendChild(div);
     }
   },
   update(el, binding) {
+    console.log(window)
     if (!binding.arg) {
       let div = document.getElementById("mask");
       el.removeChild(div);
@@ -45,13 +47,17 @@ Vue.directive("loading", {
       let div = document.createElement("div");
       div.id = "mask";
       div.style.position = "absolute";
+      div.style.top = "50%";
+      div.style.left = "50%";
+      div.style.transform = "translate(-50%,-50%)";
       div.style.backgroundColor = "rgba(255,255,255,0.7)";
-      div.style.top = "0";
-      div.style.right = "0";
-      div.style.bottom = "0";
-      div.style.left = "0";
+      div.style.height = "300px";
+      div.style.width = "400px";
+      div.style.border = "1px solid #ccc";
+      div.style.borderRadius = "5px";
+      div.style.boxShadow = "0px 1px 3px #ccc"
       div.style.textAlign = "center";
-      div.textContent = "显示中。。。。。";
+      // 添加loading样式
       el.appendChild(div);
     }
   }

@@ -1,11 +1,15 @@
 <template>
   <div class="article-leave-word">
     <div class="user" v-for="leaveInfo in leaveList" :key="leaveInfo.id">
-        <div class="user-pic">{{leaveInfo.userPic}}</div>
+        <div class="user-pic" :style="{backgroundImage:'url('+leaveInfo.user_pic+')'}"></div>
         <div class="user-leave">
-          <h4 class="user-nick">{{leaveInfo.username}}</h4>
-          <p class="leave-word">{{leaveInfo.userLeaveWord}}</p>
+          <h4 class="user-nick">{{leaveInfo.id}}</h4>
+          <p class="leave-word">{{leaveInfo.user_leave_content}}</p>
+          <span class="leave-time">{{leaveInfo.user_leave_time}}</span>
         </div>
+    </div>
+    <div class="leave-add">
+      加载剩余留言
     </div>
   </div>
 </template>
@@ -13,38 +17,27 @@
 <script>
 export default {
   name: "articleLeaveWord",
+  props:["leaveLoading"],
   data() {
     return {
       leaveList:[
-        {
-          id:1,
-          userPic:"none",
-          username:"七个鱼一号",
-          userLeaveDate:"2018-9-10",
-          userLeaveWord:"hello world"
-        },
-        {
-          id:2,
-          userPic:"none",
-          username:"七个鱼二号",
-          userLeaveDate:"2018-9-10",
-          userLeaveWord:"hello world"
-        },
-        {
-          id:3,
-          userPic:"none",
-          username:"七个鱼三号",
-          userLeaveDate:"2018-9-10",
-          userLeaveWord:"hello world"
-        },
-        {
-          id:4,
-          userPic:"none",
-          username:"七个鱼四号",
-          userLeaveDate:"2018-9-10",
-          userLeaveWord:"hello world"
-        }
+
       ]
+    }
+  },
+  created() {
+    this.getUserLeaveWord();
+  },
+  methods:{
+    async getUserLeaveWord() {
+     let {data} = await this.$axios.get("http://www.qgy.com/getArticleLeave.php",{
+       params: {
+         article_id: this.$route.params.id
+       }
+     });
+     this.leaveList = data;
+     // 发生于Mounted
+     this.$emit("leaveLoading",false)
     }
   }
 }
@@ -66,6 +59,8 @@ export default {
       border: 1px solid #999;
     }
     .user-leave {
+      position: relative;
+      width: 100%;
       .user-nick {
         margin-top: 0;
         margin-bottom: 10px;
@@ -73,6 +68,33 @@ export default {
       .leave-word {
         margin-top: 0;
       }
+      .leave-time {
+        position: absolute;
+        bottom: 0;
+        right: 0px;
+      }
+    }
+  }
+  .leave-add {
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+    position: relative;
+    &:hover {
+      color: #999;
+      text-decoration: underline;
+    }
+    &::after {
+      content:"";
+      display: inline-block;
+      margin-left: 5px;
+      position: absolute;
+      top: 8px;
+      border: 10px solid transparent;
+      border-top: 10px solid #000000;
+    }
+    &:hover::after {
+      border-top-color: #999;;
     }
   }
 }
