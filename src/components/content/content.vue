@@ -2,15 +2,17 @@
   <div class="content">
     <transition-group class="list-ul" name="tg" tag="ul" mode="in-out">
       <li v-for="item in $store.state.article_list" :key="item.id" class="list-li">
-        <div class="title-container">
-          <div class="title">{{item.title}}</div>
-          <div class="introduction">{{item.describe}}</div>
-        </div>
-        <div class="describe">
-          <div class="classify">{{item.classify}}</div>
-          <div class="date">{{item.date_time | formatTimes}}</div>
-        </div>
-        <div class="image" :style="{backgroundImage:'url('+item.bg_image+')'}"></div>
+        <router-link :to="/info/+item.id" class="article-link">
+          <div class="title-container">
+            <div class="title">{{item.title}}</div>
+            <div class="introduction">{{item.describe}}</div>
+          </div>
+          <div class="describe">
+            <div class="classify">{{item.classify}}</div>
+            <div class="date">{{item.date_time | formatTimes}}</div>
+          </div>
+          <div class="image" :style="{backgroundImage:'url('+item.bg_image+')'}"></div>
+        </router-link>
       </li>
     </transition-group>
   </div>
@@ -19,16 +21,11 @@
 <script>
 export default {
   name: "contents",
-  data() {
-    return {
-      dataList: this.$store.state.article_list
-    }
-  },
   filters: {
     formatTimes(val) {
       return val.split(" ")[0];
     }
-  }
+  },
 }
 </script>
 
@@ -40,6 +37,7 @@ $bgColor: rgba(244, 245, 243, 0.5);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+
     .list-li {
       flex-grow: 1;
       flex-shrink: 0;
@@ -53,6 +51,10 @@ $bgColor: rgba(244, 245, 243, 0.5);
       box-shadow: 0 0 5px #ccc;
       overflow: hidden;
       position: relative;
+      .article-link {
+        text-decoration: none;
+        color: #333;
+      }
       .image {
         position: absolute;
         top: 0;

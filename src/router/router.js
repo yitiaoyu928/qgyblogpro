@@ -5,6 +5,7 @@ import Content from "../components/content/content.vue";
 import Operation from "../components/user-operation/operation.vue";
 import logins from "../components/login/login.vue";
 import register from "../components/register/register.vue";
+import articleInfo from "@/components/article-info/articleInfo";
 let routes = [
   {
     path: '/',
@@ -14,6 +15,10 @@ let routes = [
       {
         path: "/",
         component:Content
+      },
+      {
+        path:"/info/:id",
+        component:articleInfo
       }
     ]
   },
