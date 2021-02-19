@@ -1,5 +1,5 @@
 .loading {
-  animation: loadings 1s linear;
+  animation: loadings 1s linear infinite;
 }
 @keyframes loadings {
   0%{

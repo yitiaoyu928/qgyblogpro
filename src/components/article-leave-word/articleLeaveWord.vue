@@ -39,14 +39,18 @@ export default {
           rows: this.rows
         }
       });
-      this.leaveList = data;
-      // 发生于Mounted
-      this.$emit("leaveLoading", true)
+      if(Array.isArray(data)) {
+        this.leaveList = data;
+        // 发生于Mounted
+        this.$emit("leaveLoading", true,true)
+      }else {
+        this.$emit("leaveLoading", true,false)
+      }
     },
     // 点击加载列表后追加留言
     async addLeave() {
+      // row的下一次分页长度就是上一次获取全部内容的长度
       this.rows = this.leaveList.length;
-      console.log(this.rows)
       let {data} = await this.$axios.get("http://www.qgy.com/getArticleLeave.php", {
         params: {
           article_id: this.$route.params.id,

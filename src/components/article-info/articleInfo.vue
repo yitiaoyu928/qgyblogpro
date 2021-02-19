@@ -11,7 +11,7 @@
         {{article_content}}
       </div>
     </div>
-    <div class="leave-word">
+    <div class="leave-word" v-show="leave_show">
       <leave-word @leaveLoading="leaveLoading"></leave-word>
     </div>
   </div>
@@ -28,13 +28,15 @@ export default {
       id: this.$route.params.id,
       article_list: {},
       show: false,
-      leaveLoadingSuccess: false
+      leaveLoadingSuccess: false,
+      leave_show:true
     }
   },
   created() {
     this.getStoreInfo();
   },
   mounted() {
+    // 用户留言以及文章信息列表同时加载成功，才能关闭浮层
     this.getArticleInfo();
   },
   filters: {
@@ -43,6 +45,7 @@ export default {
     }
   },
   methods: {
+    // 获取详细文章内容
     async getArticleInfo() {
       this.show = true;
       let {data} = await this.$axios({
@@ -57,13 +60,17 @@ export default {
         this.show = false;
       }
     },
+    // 从vuex中获取以及存在的数据（分类以及日期）
     getStoreInfo() {
       let {classify, date_time} = this.$store.state.article_list[this.id - 1];
       this.article_list.classify = classify;
       this.article_list.date_time = date_time;
     },
-    leaveLoading(val) {
+    // 修改浮层显示情况
+    leaveLoading(val,leaveShow) {
       this.leaveLoadingSuccess = val;
+      // 是否显示留言部分
+      this.leave_show = leaveShow;
     }
   },
   components: {
@@ -78,9 +85,10 @@ export default {
   flex-direction: column;
   justify-content: center;
   height: 100%;
-
+  .hide {
+    display: none;
+  }
   .article-box {
-    border-bottom: 1px solid #ccc;
     flex-grow: 11;
   }
 

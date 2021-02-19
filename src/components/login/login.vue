@@ -58,6 +58,7 @@ export default {
     }
   },
   methods: {
+    // 此部分需要重写，将这些部分全部拆分
     checkVal(e) {
       // 检测username/pass里面的span是否存在获取焦点样式如果有则删除，没有则添加
       if (this.username === "" && e.target.nextSibling.classList.contains("input-not-null")) {
@@ -93,7 +94,6 @@ export default {
       }
       if(e.target.type) {
         timer=setTimeout(()=>{
-          // this.validatorValue(this.username,usernamePattern);
           clearTimeout(timer);
           timer = null;
         },500)

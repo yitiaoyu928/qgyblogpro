@@ -39,7 +39,7 @@ export default {
     }
 
     .app-aside {
-      border-left: 1px solid #ccc;
+      //border-left: 1px solid #ccc;
     }
 
     .main-content {

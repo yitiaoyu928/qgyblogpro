@@ -93,6 +93,7 @@ export default {
   },
   methods: {
     checkVal(e) {
+      // 此部分需要重写，逻辑错误，结构不清晰
       if (this.username === "" && e.target.nextSibling.classList.contains("input-not-null")) {
         e.target.nextSibling.classList.remove("input-not-null");
         return;
