@@ -21,6 +21,7 @@ Vue.component("tab-bar", tabBar)
 Vue.component("my-content", content)
 Vue.component("aisder", aisde)
 Vue.component("common-header", commonHeader);
+// 全局loading加载
 Vue.directive("loading", {
   bind(el, binding) {
     if (binding.arg) {
@@ -39,12 +40,18 @@ Vue.directive("loading", {
     }
   },
   update(el, binding) {
-    console.log(window)
     if (!binding.arg) {
       let div = document.getElementById("mask");
       el.removeChild(div);
     } else {
       let div = document.createElement("div");
+      let i = document.createElement("i");
+      i.className = "iconfont icon-loading loading";
+      i.style.position="absolute";
+      i.style.left = "50%";
+      i.style.top = "50%";
+      i.style.transform="translate(-50%,-50%)";
+      div.appendChild(i);
       div.id = "mask";
       div.style.position = "absolute";
       div.style.top = "50%";
@@ -63,7 +70,6 @@ Vue.directive("loading", {
   }
 })
 import axios from "axios";
-
 Vue.prototype.$axios = axios;
 new Vue({
   render: h => h(App),

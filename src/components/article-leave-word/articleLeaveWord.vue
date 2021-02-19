@@ -1,14 +1,16 @@
 <template>
   <div class="article-leave-word">
-    <div class="user" v-for="leaveInfo in leaveList" :key="leaveInfo.id">
+    <transition-group name="leave-trans" tag="div">
+      <div class="user" v-for="leaveInfo in leaveList" :key="leaveInfo.id">
         <div class="user-pic" :style="{backgroundImage:'url('+leaveInfo.user_pic+')'}"></div>
         <div class="user-leave">
           <h4 class="user-nick">{{leaveInfo.id}}</h4>
           <p class="leave-word">{{leaveInfo.user_leave_content}}</p>
           <span class="leave-time">{{leaveInfo.user_leave_time}}</span>
         </div>
-    </div>
-    <div class="leave-add">
+      </div>
+    </transition-group>
+    <div class="leave-add" @click="addLeave" v-if="isEnd">
       加载剩余留言
     </div>
   </div>
@@ -17,27 +19,47 @@
 <script>
 export default {
   name: "articleLeaveWord",
-  props:["leaveLoading"],
+  props: ["leaveLoading"],
   data() {
     return {
-      leaveList:[
-
-      ]
+      leaveList: [],
+      rows: 0,
+      isEnd: true
     }
   },
   created() {
     this.getUserLeaveWord();
   },
-  methods:{
+  methods: {
+    // 第一次获取用户留言列表
     async getUserLeaveWord() {
-     let {data} = await this.$axios.get("http://www.qgy.com/getArticleLeave.php",{
-       params: {
-         article_id: this.$route.params.id
-       }
-     });
-     this.leaveList = data;
-     // 发生于Mounted
-     this.$emit("leaveLoading",false)
+      let {data} = await this.$axios.get("http://www.qgy.com/getArticleLeave.php", {
+        params: {
+          article_id: this.$route.params.id,
+          rows: this.rows
+        }
+      });
+      this.leaveList = data;
+      // 发生于Mounted
+      this.$emit("leaveLoading", true)
+    },
+    // 点击加载列表后追加留言
+    async addLeave() {
+      this.rows = this.leaveList.length;
+      console.log(this.rows)
+      let {data} = await this.$axios.get("http://www.qgy.com/getArticleLeave.php", {
+        params: {
+          article_id: this.$route.params.id,
+          rows: this.rows
+        }
+      });
+      // 将加载的内容与之前的留言合并
+      this.leaveList = this.leaveList.concat(data);
+      if (!this.leaveList[this.leaveList.length - 1]) {
+        alert("以及加载完了所有消息");
+        this.leaveList.pop();
+        this.isEnd = false;
+      }
     }
   }
 }
@@ -48,9 +70,17 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  .leave-trans-enter,.leave-trans-leave-to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  .leave-trans-enter-active,.leave-trans-leave-active {
+    transition: all 0.7s;
+  }
   .user {
     display: flex;
     flex-direction: row;
+
     .user-pic {
       width: 50px;
       height: 50px;
@@ -58,16 +88,20 @@ export default {
       border-radius: 50%;
       border: 1px solid #999;
     }
+
     .user-leave {
       position: relative;
       width: 100%;
+
       .user-nick {
         margin-top: 0;
         margin-bottom: 10px;
       }
+
       .leave-word {
         margin-top: 0;
       }
+
       .leave-time {
         position: absolute;
         bottom: 0;
@@ -75,17 +109,20 @@ export default {
       }
     }
   }
+
   .leave-add {
     text-align: center;
     user-select: none;
     cursor: pointer;
     position: relative;
+
     &:hover {
       color: #999;
       text-decoration: underline;
     }
+
     &::after {
-      content:"";
+      content: "";
       display: inline-block;
       margin-left: 5px;
       position: absolute;
@@ -93,6 +130,7 @@ export default {
       border: 10px solid transparent;
       border-top: 10px solid #000000;
     }
+
     &:hover::after {
       border-top-color: #999;;
     }

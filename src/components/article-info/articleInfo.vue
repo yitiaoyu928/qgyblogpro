@@ -51,7 +51,7 @@ export default {
         params: {
           article_id: this.$route.params.id
         }
-      })
+      });
       this.article_content = data.article_content;
       if (this.article_content && this.leaveLoadingSuccess) {
         this.show = false;
