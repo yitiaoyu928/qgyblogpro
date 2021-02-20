@@ -41,10 +41,12 @@ export default {
       });
       if(Array.isArray(data)) {
         this.leaveList = data;
+        this.isEnd = true;
         // 发生于Mounted
-        this.$emit("leaveLoading", true,true)
+        this.$emit("leaveLoading", true)
       }else {
-        this.$emit("leaveLoading", true,false)
+        this.isEnd = false;
+        this.$emit("leaveLoading", true)
       }
     },
     // 点击加载列表后追加留言

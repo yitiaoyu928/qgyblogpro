@@ -23,22 +23,6 @@ Vue.component("aisder", aisde)
 Vue.component("common-header", commonHeader);
 // 全局loading加载
 Vue.directive("loading", {
-  bind(el, binding) {
-    if (binding.arg) {
-      let div = document.createElement("div");
-      div.id = "mask";
-      div.style.position = "absolute";
-      div.style.backgroundColor = "rgba(255,255,255,0.7)";
-      div.style.top = "0";
-      div.style.right = "0";
-      div.style.bottom = "0";
-      div.style.left = "0";
-      div.style.zIndex = "99999";
-      div.style.textAlign = "center";
-      div.textContent = "显示中。。。。。";
-      el.appendChild(div);
-    }
-  },
   update(el, binding) {
     if (!binding.arg) {
       let div = document.getElementById("mask");
@@ -63,7 +47,6 @@ Vue.directive("loading", {
       div.style.border = "1px solid #ccc";
       div.style.borderRadius = "5px";
       div.style.boxShadow = "0px 1px 3px #ccc"
-      div.style.textAlign = "center";
       // 添加loading样式
       el.appendChild(div);
     }

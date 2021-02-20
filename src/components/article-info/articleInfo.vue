@@ -7,11 +7,11 @@
           <span class="article-classify">{{article_list.classify}}</span><span class="article-date">{{article_list.date_time | formatDate}}</span>
         </div>
       </div>
-      <div class="article-content">
-        {{article_content}}
+      <div class="article-content" v-html="article_content">
+
       </div>
     </div>
-    <div class="leave-word" v-show="leave_show">
+    <div class="leave-word">
       <leave-word @leaveLoading="leaveLoading"></leave-word>
     </div>
   </div>
@@ -29,7 +29,6 @@ export default {
       article_list: {},
       show: false,
       leaveLoadingSuccess: false,
-      leave_show:true
     }
   },
   created() {
@@ -55,7 +54,7 @@ export default {
           article_id: this.$route.params.id
         }
       });
-      this.article_content = data.article_content;
+      this.article_content = this.replaceContent(data.article_content);
       if (this.article_content && this.leaveLoadingSuccess) {
         this.show = false;
       }
@@ -67,10 +66,19 @@ export default {
       this.article_list.date_time = date_time;
     },
     // 修改浮层显示情况
-    leaveLoading(val,leaveShow) {
+    leaveLoading(val) {
       this.leaveLoadingSuccess = val;
-      // 是否显示留言部分
-      this.leave_show = leaveShow;
+    },
+    replaceContent(val) {
+      let replaceURL = /(http|https):\/\/([\w-_/]+\.)*[\w]*/;
+      let replaceImage = /\[image\]/;
+      let urls = "";
+      if(replaceURL.test(val)) {
+        urls = val.match(replaceURL)[0];
+        console.log(urls)
+      }
+      let newVal = val.replace(replaceImage, "<img src='" + urls + "'><br/>").replace(/-(http|https):\/\/([\w-_/]+\.)*[\w]*-/,"");
+      return newVal;
     }
   },
   components: {
@@ -85,9 +93,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   height: 100%;
-  .hide {
-    display: none;
-  }
+
   .article-box {
     flex-grow: 11;
   }
