@@ -2,7 +2,7 @@
   <div class="article-info" v-loading:[show]>
     <div class="article-box">
       <div class="title-box">
-        <h2 class="article-title">这是文章的标题</h2>
+        <h2 class="article-title">{{title}}</h2>
         <div class="article-infos">
           <span class="article-classify">{{article_list.classify}}</span><span class="article-date">{{article_list.date_time | formatDate}}</span>
         </div>
@@ -25,6 +25,7 @@ export default {
   data() {
     return {
       article_content: "",
+      title: "",
       id: this.$route.params.id,
       article_list: {},
       show: false,
@@ -54,6 +55,7 @@ export default {
           article_id: this.$route.params.id
         }
       });
+      this.title = data.article_title;
       this.article_content = this.replaceContent(data.article_content);
       if (this.article_content && this.leaveLoadingSuccess) {
         this.show = false;
@@ -70,15 +72,33 @@ export default {
       this.leaveLoadingSuccess = val;
     },
     replaceContent(val) {
+      // 替换图片正则
       let replaceURL = /(http|https):\/\/([\w-_/]+\.)*[\w]*/;
       let replaceImage = /\[image\]/;
+      // 替换JS代码段正则
+      let codeJS = /-js(.*?)-/g;
+
       let urls = "";
-      if(replaceURL.test(val)) {
+      // 是否存在URL
+      if (replaceURL.test(val)) {
         urls = val.match(replaceURL)[0];
-        console.log(urls)
       }
-      let newVal = val.replace(replaceImage, "<img src='" + urls + "'><br/>").replace(/-(http|https):\/\/([\w-_/]+\.)*[\w]*-/,"");
-      return newVal;
+      // 是否需要替换成图片,并清除URL
+      if (replaceImage.test(val)) {
+        val = val.replace(replaceImage, "<img src='" + urls + "' style='width: 100%;'><br/>").replace(/-(http|https):\/\/([\w-_/]+\.)*[\w]*-/, "");
+      }
+      // 替换代码块
+     let allChunk = val.match(codeJS);
+      // 得到所有代码块
+      // 需要全局替换CODE代码块,替换图片有同样问题,未全局替换
+    let getChunk = allChunk.every(item=>{
+        return item.match(/-js(.*?)-/)[0];
+    })
+      console.log(getChunk);
+      if (codeJS.test(val)) {
+        val = val.replace(val.match(codeJS)[0], "<pre>" + val.match(codeJS)[1] + "</pre>");
+      }
+      return val;
     }
   },
   components: {

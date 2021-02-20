@@ -9,3 +9,9 @@
     transform: rotate(360deg);
   }
 }
+pre {
+  background-color: rgba(149,165,166,.8);
+}
+pre:nth-child(2n) {
+  background-color: #333;
+}

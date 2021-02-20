@@ -73,7 +73,7 @@ export default {
         cursor: pointer;
 
         &.active {
-          background-color: #2a363b;
+          background-color: rgb(39,174,96);
           color: #fff;
           -webkit-border-radius: 10px;
           -moz-border-radius: 10px;
@@ -95,7 +95,7 @@ export default {
           line-height: 40px;
 
           &.active {
-            background-color: #2a363b;
+            background-color: rgba(46,204,113,.8);
             color: #fff;
             -webkit-border-radius: 10px;
             -moz-border-radius: 10px;
