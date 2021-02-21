@@ -6,7 +6,9 @@
       </my-header>
       <my-container>
         <my-main class="main-content">
-          <router-view></router-view>
+          <transition name="content-transform">
+            <router-view></router-view>
+          </transition>
         </my-main>
         <my-aside width="200px" class="app-aside">
           <aisder></aisder>
@@ -44,6 +46,16 @@ export default {
 
     .main-content {
       min-height: 600px;
+      .content-transform-enter,.content-transform-leave-to {
+        transform:translateY(-100%);
+        opacity: 0;
+      }
+      .content-transform-enter-active,.content-transform-leave-active {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transition: all 1s;
+      }
     }
 
     .app-footer {

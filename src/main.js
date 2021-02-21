@@ -6,6 +6,7 @@ import tabBar from "./components/tabBar/tabBar.vue";
 import content from "./components/content/content.vue";
 import aisde from './components/aside/aside.vue';
 import commonHeader from "./components/common-header/commonHeader.vue";
+import videoPlay from "./components/video/video-play.vue";
 import router from "./router/router.js";
 import store from "./vuex/store.js";
 
@@ -21,6 +22,7 @@ Vue.component("tab-bar", tabBar)
 Vue.component("my-content", content)
 Vue.component("aisder", aisde)
 Vue.component("common-header", commonHeader);
+Vue.component("video-play",videoPlay);
 // 全局loading加载
 Vue.directive("loading", {
   update(el, binding) {
