@@ -10,6 +10,8 @@ const store = new Vuex.Store({
     getArticleList(context) {
       axios.get("http://www.qgy.com/getArticleList.php").then(res => {
         context.state.article_list = res.data;
+        // 转化为JSON字符串存入session中
+       sessionStorage.setItem("article_list",JSON.stringify(res.data))
       })
     }
   }

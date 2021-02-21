@@ -9,8 +9,8 @@
 export default {
   name: 'App',
   created() {
-    // 触发Vuex异步事件
-    this.$store.dispatch("getArticleList")
+    // 触发Vuex异步事件，获取全部文章
+   this.$store.dispatch("getArticleList");
   }
 }
 </script>

@@ -4,7 +4,8 @@
       <div class="title-box">
         <h2 class="article-title">{{title}}</h2>
         <div class="article-infos">
-          <span class="article-classify">{{article_list.classify}}</span><span class="article-date">{{article_list.date_time | formatDate}}</span>
+          <span class="article-classify">{{article_list.classify}}</span>
+          <span class="article-date">{{article_list.date_time | formatDate}}</span>
         </div>
       </div>
       <div class="article-content" v-html="article_content">
@@ -63,7 +64,7 @@ export default {
     },
     // 从vuex中获取以及存在的数据（分类以及日期）
     getStoreInfo() {
-      let {classify, date_time} = this.$store.state.article_list[this.id - 1];
+      let {classify, date_time} = JSON.parse(sessionStorage.getItem("article_list"))[this.id-1];
       this.article_list.classify = classify;
       this.article_list.date_time = date_time;
     },
@@ -72,31 +73,32 @@ export default {
       this.leaveLoadingSuccess = val;
     },
     replaceContent(val) {
-      // 替换图片正则
-      let replaceURL = /(http|https):\/\/([\w-_/]+\.)*[\w]*/;
-      let replaceImage = /\[image\]/;
+      // 全局正则
+      // 找到全部含有[image]-的内容
+      let replaceURL = /\[image\]-(http|https):\/\/([\w-_/]+\.)*[\w]*-/g;
       // 替换JS代码段正则
       let codeJS = /-js(.*?)-/g;
-
-      let urls = "";
+      // 局部正则
+      let topoReplaceURL = /(http|https):\/\/([\w-_/]+\.)*[\w]*/;
+      let topoCodeJS = /-js(.*?)-/
       // 是否存在URL
-      if (replaceURL.test(val)) {
-        urls = val.match(replaceURL)[0];
-      }
       // 是否需要替换成图片,并清除URL
-      if (replaceImage.test(val)) {
-        val = val.replace(replaceImage, "<img src='" + urls + "' style='width: 100%;'><br/>").replace(/-(http|https):\/\/([\w-_/]+\.)*[\w]*-/, "");
+      if (replaceURL.test(val)) {
+        // "<img src='" + urls + "' style='width: 100%;'><br/>"
+        let allImageURL = val.match(replaceURL);
+        for(let i = 0;i<allImageURL.length;i++) {
+          let x = allImageURL[i].match(topoReplaceURL);
+          val = val.replace(allImageURL[i],"<img src='" + x[0] + "' style='width: 100%;'><br/>");
+        }
       }
-      // 替换代码块
-     let allChunk = val.match(codeJS);
-      // 得到所有代码块
-      // 需要全局替换CODE代码块,替换图片有同样问题,未全局替换
-    let getChunk = allChunk.every(item=>{
-        return item.match(/-js(.*?)-/)[0];
-    })
-      console.log(getChunk);
+      // 全局替换含有-js ** -的内容
       if (codeJS.test(val)) {
-        val = val.replace(val.match(codeJS)[0], "<pre>" + val.match(codeJS)[1] + "</pre>");
+        // 获取全部含有-js ** -的内容
+        let allArray = val.match(codeJS);
+        for(let i = 0;i<allArray.length;i++) {
+          let x = allArray[i].match(topoCodeJS);
+          val = val.replace(x[0],"<pre>" + x[1] + "</pre>")
+        }
       }
       return val;
     }
