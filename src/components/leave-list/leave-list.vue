@@ -17,15 +17,19 @@
         </td>
         <td>{{item.leave_time}}</td>
         <td>
-          <span>修改</span> | <span>删除</span>
+          <span @click="editLeaveWord" class="operation">修改</span> | <span @click="deleteLeaveWord($event)" class="operation">删除</span>
         </td>
       </tr>
       </tbody>
     </table>
+    <div class="edit-dialog" v-if="edit_bool">
+      <leave-dialog></leave-dialog>
+    </div>
   </div>
 </template>
 
 <script>
+import leaveDialog from "@/components/leave-list/leave-dialog.vue";
 export default {
   name: "leave-list",
   data() {
@@ -49,8 +53,20 @@ export default {
           article_content: "你好啊你好啊你好啊你好啊",
           leave_time: "2018-9-03"
         }
-      ]
+      ],
+      edit_bool:false
     }
+  },
+  methods:{
+    editLeaveWord() {
+      this.edit_bool = true;
+    },
+    deleteLeaveWord(el) {
+      el.target.parentNode.parentNode.remove();
+    }
+  },
+  components:{
+    "leave-dialog":leaveDialog
   }
 }
 </script>
@@ -59,7 +75,7 @@ export default {
 .leave-list {
   width: 100%;
   min-height: 400px;
-
+  position: relative;
   .leave-table {
     width: 100%;
     border: 1px solid #ccc;
@@ -76,6 +92,12 @@ export default {
     td {
       border: 1px solid #ccc;
       text-align: center;
+      .operation {
+        cursor:pointer;
+        &:hover {
+          color: #666;
+        }
+      }
     }
   }
 }
