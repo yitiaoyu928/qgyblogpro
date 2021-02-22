@@ -77,9 +77,22 @@ export default {
         this.pwIsNuLL = false;
       }
     },
-    userLogin() {
-      sessionStorage.setItem("flags", "1");
-      this.$router.push("/");
+    async userLogin() {
+      if(!this.unIsNUll && !this.pwIsNuLL) {
+        alert("用户名或密码未填写");
+        return;
+      }
+      let {data} = await this.$axios.get("http://www.qgy.com/userLogin.php",{
+        params:{
+          username:this.username,
+          password:this.pass
+        }
+      });
+      console.log(data)
+      sessionStorage.setItem("user",JSON.stringify(data));
+      if(sessionStorage.getItem("user")) {
+        this.$router.push("/");
+      }
     },
     // 防抖
     deBounce(fn) {

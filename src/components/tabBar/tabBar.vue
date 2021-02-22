@@ -35,7 +35,7 @@ export default {
     "un-logins": unLogins
   },
   created() {
-    if(sessionStorage.getItem("flags")==="1") {
+    if(sessionStorage.getItem("user")) {
       this.login = true;
     }
   }

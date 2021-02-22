@@ -50,7 +50,7 @@
           <!--          输入邮箱-->
           <div class="outer-box">
             <label for="email" class="user-names">
-              <input type="password"
+              <input type="text"
                      name="email"
                      id="email"
                      class="email"
@@ -78,19 +78,19 @@ export default {
   data() {
     return {
       username: "",
-      unIsNull:false,
+      unIsNull: false,
       nameHint: "用户名应该是以字母开头的字母数组组合",
       nameIsError: false,
       pass: "",
-      pwIsNull:false,
+      pwIsNull: false,
       passHint: "密码应该是6-16位字母数字组合",
       passIsError: false,
       passAgain: "",
-      pwAgainIsNull:false,
+      pwAgainIsNull: false,
       passAgainHint: "请保证与上次密码输入一致",
       passAgainIsError: false,
       email: "",
-      emIsNull:false,
+      emIsNull: false,
       emailHint: "邮箱格式:XXX@XX.com",
       emailIsError: false,
     }
@@ -125,20 +125,21 @@ export default {
         this.emIsNull = false;
       }
     },
-    userRegist() {
+    async userRegist() {
       // URLSearchParams传递POST参数
       let param = new URLSearchParams();
       param.append("username", this.username);
       param.append("pw", this.pass);
       param.append("passAgain", this.passAgain);
       param.append("email", this.email);
-      this.$axios({
+      // 待修改，注册之后直接登录
+      let {data} = await this.$axios({
         method: "post",
         url: "http://www.qgy.com/userRegist.php",
         data: param
-      }).then(res => {
-        console.log(res)
-      })
+      });
+      sessionStorage.setItem("user", JSON.stringify(data));
+      this.$router.push("/");
     },
     //防抖插件
     debounce(func) {
