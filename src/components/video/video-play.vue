@@ -1,7 +1,7 @@
 <template>
   <div class="video" ref="fullScreen">
     <div class="video-source">
-      <video :src="videoSrc" class="video-file" ref="video"></video>
+      <video :src="videoSrc" class="video-file" ref="video" @click="videoPlay"></video>
     </div>
     <div class="video-control">
       <div class="control-box">
@@ -58,10 +58,12 @@ export default {
       } else {
         this.$refs.video.pause();
       }
+      // 当视频当前播放改变时，改变maske的宽度
       this.$refs.video.addEventListener("timeupdate", (e) => {
         this.setProgress(e.target.currentTime, e.target.duration);
       })
     },
+    // 视频进度条
     progress(e) {
       this.$refs.innerMask.style.width = e.offsetX + 'px';
       // 宽度计算
@@ -69,6 +71,7 @@ export default {
       this.$refs.video.currentTime = e.offsetX / e.target.offsetWidth * this.$refs.video.duration;
       this.setProgress(this.$refs.video.currentTime, this.$refs.video.duration);
     },
+    // 视频是否静音
     videoVoice() {
       this.voice = !this.voice;
       if (this.voice) {
@@ -108,9 +111,11 @@ export default {
         }
       })
     },
+    // 显示音量
     showSilder() {
       this.slider = true;
     },
+    // 使用setTimeout延迟音量消失
     hideSlider() {
       if(timer) {
         return;
@@ -135,9 +140,9 @@ export default {
       this.enterVoice = false;
       this.slider = false;
     },
+    // 调节音量大小
     mouseEvents(e) {
       let distance = this.$refs.sliderVoice.offsetWidth - (this.$refs.ball.offsetWidth / 2);
-      console.log(distance)
       if (this.$refs.ball.offsetLeft > 95) {
         this.$refs.ball.style.left = distance + "px";
         this.setVoice(1);
@@ -148,6 +153,7 @@ export default {
         this.setVoice(0);
         this.cancleHandler()
       } else {
+        // 当前位置加上新的偏移值，防止闪烁
         this.$refs.ball.style.left = this.$refs.ball.offsetLeft + e.offsetX - (this.$refs.ball.offsetWidth / 2) + "px";
         this.setVoice(this.$refs.ball.offsetLeft / 100);
       }
@@ -199,7 +205,6 @@ export default {
           width: 100px;
           height: 15px;
           padding: 2px 0;
-
           &::after {
             content: "";
             position: absolute;
@@ -207,7 +212,7 @@ export default {
             left: 55%;
             transform: translate(-50%, -50%);
             height: 1px;
-            background-color: #ccc;
+            background-color: rgb(44,62,80);
             width: 100%;
           }
 

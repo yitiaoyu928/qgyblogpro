@@ -13,6 +13,9 @@
     <div class="leave-add" @click="addLeave" v-if="isEnd">
       加载剩余留言
     </div>
+    <div class="leave-dialog">
+      <leave-dialog place-holder="请输入留言内容" :len="50"></leave-dialog>
+    </div>
   </div>
 </template>
 

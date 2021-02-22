@@ -3,9 +3,6 @@
     <transition name="transform-left">
       <router-view></router-view>
     </transition>
-    <div>
-      <video-play></video-play>
-    </div>
   </div>
 </template>
 

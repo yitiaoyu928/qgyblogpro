@@ -46,15 +46,13 @@ export default {
 
     .main-content {
       min-height: 600px;
+      overflow-y: hidden;
       .content-transform-enter,.content-transform-leave-to {
         transform:translateY(-100%);
         opacity: 0;
       }
       .content-transform-enter-active,.content-transform-leave-active {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        transition: all 1s;
+        transition: all 0.5s;
       }
     }
 
