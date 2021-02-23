@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import 'element-ui/lib/theme-chalk/index.css'
-import {Button, Input, Header, Aside, Main, Footer, Container} from 'element-ui'
+import {Button, Input, Header, Aside, Main, Footer, Container,Message} from 'element-ui';
+Vue.prototype.$message = Message;
 import tabBar from "./components/tabBar/tabBar.vue";
 import content from "./components/content/content.vue";
 import aisde from './components/aside/aside.vue';
@@ -39,6 +40,7 @@ Vue.directive("loading", {
       i.style.left = "50%";
       i.style.top = "50%";
       i.style.transform="translate(-50%,-50%)";
+      i.style.fontSize="28px";
       div.appendChild(i);
       div.id = "mask";
       div.style.position = "absolute";

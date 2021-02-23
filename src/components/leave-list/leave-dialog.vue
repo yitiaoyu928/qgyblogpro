@@ -4,9 +4,9 @@
       <h1 class="classify">用户信息</h1>
       <form>
         <label for="leave_id" class="label-box" hidden>
-          <span class="user">文章ID</span>
+          <span class="user">userID</span>
           <input type="text" class="username" name="leave_id" id="leave_id" autocomplete="off"
-                 v-model="article_id" disabled/>
+                 v-model="id" disabled/>
         </label>
         <label for="nick" class="label-box">
           <span class="user">用户昵称</span>
@@ -56,6 +56,7 @@ export default {
       article_content: "",
       leave_time: "",
       nick: "",
+      id:""
 
     }
   },
@@ -63,10 +64,26 @@ export default {
     this.getLeaveInfo()
   },
   methods: {
-    submitEdit() {
-
+    async submitEdit() {
+      let URLParams = new URLSearchParams();
+      URLParams.append("id",this.id);
+      URLParams.append("leave_content",this.article_content);
+      // 提交用户ID，内容修改数据库
+    let {data} =  await this.$axios({
+        url:"http://www.qgy.com/editLeaveWord.php",
+        method:"post",
+        data:URLParams
+      });
+    let _this = this;
+    this.$message({
+      message:data,
+      onClose() {
+        _this.$router.go(0);
+      }
+    });
     },
     getLeaveInfo() {
+      this.id = this.leaveInfo.id;
       this.article_id = this.leaveInfo.article_id;
       this.username = this.leaveInfo.username;
       this.nick = this.leaveInfo.nick;

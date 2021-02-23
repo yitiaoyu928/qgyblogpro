@@ -2,11 +2,11 @@
   <div class="article-leave-word">
     <transition-group name="leave-trans" tag="div">
       <div class="user" v-for="leaveInfo in leaveList" :key="leaveInfo.id">
-        <div class="user-pic" :style="{backgroundImage:'url('+leaveInfo.user_pic+')'}"></div>
+        <div class="user-pic"><img :src="leaveInfo.user_pic" alt="显示错误"></div>
         <div class="user-leave">
-          <h4 class="user-nick">{{leaveInfo.id}}</h4>
+          <h4 class="user-nick">{{leaveInfo.nick}}</h4>
           <p class="leave-word">{{leaveInfo.user_leave_content}}</p>
-          <span class="leave-time">{{leaveInfo.user_leave_time}}</span>
+          <span class="leave-time">{{leaveInfo.user_leave_time | formatDate}}</span>
         </div>
       </div>
     </transition-group>
@@ -65,10 +65,15 @@ export default {
       // 将加载的内容与之前的留言合并
       this.leaveList = this.leaveList.concat(data);
       if (!this.leaveList[this.leaveList.length - 1]) {
-        alert("以及加载完了所有消息");
+        this.$message("已经加载完了所有消息");
         this.leaveList.pop();
         this.isEnd = false;
       }
+    }
+  },
+  filters: {
+    formatDate(val) {
+      return val.split(" ")[0];
     }
   }
 }
@@ -79,6 +84,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  padding: 10px 0;
   .leave-trans-enter,.leave-trans-leave-to {
     opacity: 0;
     transform: translateY(-100%);
@@ -89,13 +95,18 @@ export default {
   .user {
     display: flex;
     flex-direction: row;
-
+    margin: 10px 0;
     .user-pic {
       width: 50px;
       height: 50px;
       align-self: center;
       border-radius: 50%;
       border: 1px solid #999;
+      overflow: hidden;
+      >img {
+        width: 100%;
+        height: 100%;
+      }
     }
 
     .user-leave {
@@ -124,6 +135,7 @@ export default {
     user-select: none;
     cursor: pointer;
     position: relative;
+    margin-bottom: 10px;
 
     &:hover {
       color: #999;

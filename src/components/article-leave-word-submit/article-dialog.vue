@@ -39,8 +39,16 @@ export default {
 
   },
   methods: {
-    // 提交内容
+    // 提交留言内容
     async submitLeave() {
+      if(!this.validatorText()) {
+        this.$message({
+          message:"输入文本超出限制，最大长度为："+this.len,
+          type:"warning"
+        });
+        return;
+      }
+      // 使用POST时需要使用URLSearchParams添加参数，否则后台接受不到，也可以使用qs插件
       let URLParams=new URLSearchParams();
       let {id, username, via,nick} = this.getUserContent();
       URLParams.append("id",id);
@@ -49,6 +57,7 @@ export default {
       URLParams.append("nick",nick);
       URLParams.append("leaveContent",this.leaveWord);
       URLParams.append("article_id",this.article_id);
+      // 获取留言时间(当前时间)
       let date = new Date();
       let year = date.getFullYear();
       let month = date.getMonth()+1;
@@ -60,11 +69,20 @@ export default {
         method: "post",
         data: URLParams
       });
-      console.log(data);
+      let _this = this;
+      this.$message({
+        message:data,
+        type:"success",
+        duration:1000,
+        onClose() {
+          // 内部没有this(为undefined)
+          _this.$router.go(0);
+        }
+      })
     },
+    // 获取session中存储的用户信息
     getUserContent() {
       // 用户ID，用户账号，用户昵称，留言时间，留言内容，用户头像
-
       let {id, username, via,nick} = JSON.parse(sessionStorage.getItem("user"));
       return {
         id,
@@ -73,11 +91,11 @@ export default {
         nick
       }
     },
-    // 验证长度
     validatorText() {
       if (this.leaveWord.length > this.len) {
-        console.error("长度超出限制");
+        return false;
       }
+      return true;
     }
   }
 }

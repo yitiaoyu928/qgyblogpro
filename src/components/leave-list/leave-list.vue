@@ -1,6 +1,7 @@
 <template>
   <div class="leave-list">
-    <table class="leave-table">
+    <h1 v-if="leave_list.length === 0">这里空空的，你为什么不说话</h1>
+    <table class="leave-table" v-else>
       <thead>
       <th>ID</th>
       <th>文章ID</th>
@@ -18,7 +19,7 @@
         <td>
           {{item.nick}}
         </td>
-        <td>{{item.user_leave_content}}</td>
+        <td :title="item.user_leave_content">{{item.user_leave_content}}</td>
         <td>{{item.user_leave_time | formatDate}}</td>
         <td>
           <span @click="editLeaveWord($event)"
@@ -59,9 +60,21 @@ export default {
       });
       this.leaveInfo = Object.assign({}, x[0]);
     },
-    deleteLeaveWord(el) {
-      el.target.parentNode.parentNode.remove();
+    async deleteLeaveWord(e) {
+      let id = e.target.dataset.id;
+      let {data} = await this.$axios.delete("http://www.qgy.com/deleteLeaveWord.php", {
+        params: {
+          id: id
+        }
+      });
+      this.$message({
+        message: data,
+        type: "success",
+        offset: 100
+      });
+      this.$router.go(0);
     },
+    // 获取用户所有留言
     async getLeaveList() {
       let {id} = JSON.parse(sessionStorage.getItem("user"));
       let {data} = await this.$axios.get("http://www.qgy.com//getUserLeaveList.php", {
@@ -69,7 +82,15 @@ export default {
           user_id: id
         }
       });
-      this.leave_list = data;
+      if (data === -1) {
+        this.$message({
+          message: "没有数据哦~",
+          offset: 100
+        })
+      } else {
+        this.leave_list = data;
+      }
+
     },
     close(val) {
       this.edit_bool = val;
@@ -92,23 +113,29 @@ export default {
   min-height: 400px;
   position: relative;
 
+  > h1 {
+    text-align: center;
+  }
+
   .leave-table {
     width: 100%;
     border: 1px solid #ccc;
     border-collapse: collapse;
 
     th, td {
-      min-width: 100px;
+      max-width: 100px;
+      overflow: hidden;
     }
 
     th {
       border: 1px solid #ccc;
+
     }
 
     td {
       border: 1px solid #ccc;
       text-align: center;
-
+      white-space: nowrap;
       .operation {
         cursor: pointer;
 

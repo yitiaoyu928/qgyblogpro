@@ -6,7 +6,7 @@
       </my-header>
       <my-container>
         <my-main class="main-content">
-          <transition name="content-transform">
+          <transition name="content-transform" mode="out-in">
             <router-view></router-view>
           </transition>
         </my-main>
