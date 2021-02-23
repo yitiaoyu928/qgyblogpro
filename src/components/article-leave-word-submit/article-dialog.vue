@@ -24,24 +24,58 @@ export default {
     placeHolder: {
       type: String
     },
-    len:{
-      type:Number,
-      default:30
+    len: {
+      type: Number,
+      default: 30
     }
   },
   data() {
     return {
-      leaveWord: ""
+      leaveWord: "",
+      article_id:this.$route.params.id
     }
+  },
+  created() {
+
   },
   methods: {
     // 提交内容
-    submitLeave() {
+    async submitLeave() {
+      let URLParams=new URLSearchParams();
+      let {id, username, via,nick} = this.getUserContent();
+      URLParams.append("id",id);
+      URLParams.append("username",username);
+      URLParams.append("via",via);
+      URLParams.append("nick",nick);
+      URLParams.append("leaveContent",this.leaveWord);
+      URLParams.append("article_id",this.article_id);
+      let date = new Date();
+      let year = date.getFullYear();
+      let month = date.getMonth()+1;
+      let day = date.getDate();
+      let issue = `${year}-${month}-${day}`;
+      URLParams.append("leaveTime",issue);
+      let {data} = await this.$axios({
+        url: "http://www.qgy.com/leaveWord.php",
+        method: "post",
+        data: URLParams
+      });
+      console.log(data);
+    },
+    getUserContent() {
+      // 用户ID，用户账号，用户昵称，留言时间，留言内容，用户头像
 
+      let {id, username, via,nick} = JSON.parse(sessionStorage.getItem("user"));
+      return {
+        id,
+        username,
+        via,
+        nick
+      }
     },
     // 验证长度
     validatorText() {
-      if(this.leaveWord.length > this.len) {
+      if (this.leaveWord.length > this.len) {
         console.error("长度超出限制");
       }
     }
@@ -85,7 +119,7 @@ export default {
       transition: all 0.3s;
 
       &:hover {
-        background-color: rgb(220,220,220);
+        background-color: rgb(220, 220, 220);
       }
     }
   }
