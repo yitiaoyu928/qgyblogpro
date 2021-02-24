@@ -46,7 +46,7 @@ export default {
 
     .main-content {
       min-height: 600px;
-      overflow-y: hidden;
+      overflow: hidden;
       .content-transform-enter,.content-transform-leave-to {
         transform:translateY(-100%);
         opacity: 0;

@@ -9,7 +9,7 @@ import articleInfo from "@/components/article-info/articleInfo";
 import editUser from "@/components/user-info/user-info.vue";
 import leaveWord from "@/components/leave-list/leave-list.vue";
 import MenuClassify from "@/components/menu-classify/menu-classify.vue";
-
+import searchContent from "@/components/search-content/search-content.vue";
 let routes = [
   {
     path: '/',
@@ -36,6 +36,10 @@ let routes = [
       {
         path: "/menu/:id",
         component: MenuClassify
+      },
+      {
+        path:"/search/:content",
+        component:searchContent
       }
     ]
   },

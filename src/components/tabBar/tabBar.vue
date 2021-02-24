@@ -35,18 +35,14 @@ export default {
     "un-logins": unLogins
   },
   created() {
-    if(sessionStorage.getItem("user")) {
+    if (sessionStorage.getItem("user")) {
       this.login = true;
     }
   },
-  methods:{
-    async searchContent() {
-     let {data} = await this.$axios.get("http://www.qgy.com/searchContent.php",{
-        params:{
-          search_info:this.searchInfo
-        }
-      });
-      console.log(data);
+  methods: {
+    searchContent() {
+      this.$router.push({path: '/search/' + this.searchInfo})
+      this.searchInfo = "";
     }
   }
 }

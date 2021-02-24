@@ -88,7 +88,6 @@ export default {
           password:this.pass
         }
       });
-      console.log(data)
       sessionStorage.setItem("user",JSON.stringify(data));
       if(sessionStorage.getItem("user")) {
         this.$router.push("/");
