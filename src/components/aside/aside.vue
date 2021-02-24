@@ -7,7 +7,7 @@
     <transition name="hide">
       <div class="aside-list" v-show="!hide">
         <ul class="list-ul">
-          <li class="list-li active" v-for="link in menuList" :key="link.id">
+          <li class="list-li" v-for="link in menuList" :key="link.id">
             <div class="link-box">
               <i :class="[link.iconfont]" :style="{fontSize:'18px'}"></i>
               <router-link :to="/menu/+link.title" class="index-link">{{link.title}}</router-link>
@@ -45,10 +45,10 @@ export default {
 .aside {
   position: relative;
 
-
   .close-aside {
     padding: 3px 5px;
     border-bottom: 3px solid #ccc;
+
     .large-size {
       font-size: 18px;
       cursor: pointer;
@@ -64,28 +64,26 @@ export default {
       .list-li {
         padding: 10px 5px;
         margin: 5px 0;
-        border: 3px solid transparent;
+        border: 3px solid #ccc;
+        background-color: rgba(46, 204, 113, .5);
 
-        &.active {
-          border: 3px solid #ccc;
-          background-color: rgba(46, 204, 113, .5);
-
-          > .index-link {
-            color: #fff;
-          }
+        &:hover {
+          border-color: rgb(22, 160, 133);
         }
 
         .link-box {
           display: flex;
           justify-content: space-between;
           align-items: center;
+
           .index-link {
             text-decoration: none;
-            color: #333;
+            color: #fff;
             text-align: center;
             font-size: 18px;
             flex-grow: 1;
             flex-shrink: 0;
+
             &:hover {
               color: #666;
             }
