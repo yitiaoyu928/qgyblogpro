@@ -8,7 +8,7 @@
     <div class="tab-search">
       <div class="search-component">
         <my-input class="my-input" v-model="searchInfo" placeholder="请输入内容"></my-input>
-        <my-button icon="el-icon-search" type="primary" plain>搜索</my-button>
+        <my-button icon="el-icon-search" type="primary" plain @click="searchContent">搜索</my-button>
       </div>
     </div>
     <div class="tab-login">
@@ -37,6 +37,16 @@ export default {
   created() {
     if(sessionStorage.getItem("user")) {
       this.login = true;
+    }
+  },
+  methods:{
+    async searchContent() {
+     let {data} = await this.$axios.get("http://www.qgy.com/searchContent.php",{
+        params:{
+          search_info:this.searchInfo
+        }
+      });
+      console.log(data);
     }
   }
 }

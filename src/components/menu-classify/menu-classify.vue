@@ -1,10 +1,12 @@
 <template>
-  <div></div>
+<div class="menu-classify">
+  {{$route.params.id}}
+</div>
 </template>
 
 <script>
 export default {
-  name: "audio-play"
+name: "menu-classify"
 }
 </script>
 

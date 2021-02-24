@@ -1,10 +1,12 @@
 <template>
-  <div></div>
+  <div class="search">
+    search
+  </div>
 </template>
 
 <script>
 export default {
-  name: "audio-play"
+  name: "search-content"
 }
 </script>
 

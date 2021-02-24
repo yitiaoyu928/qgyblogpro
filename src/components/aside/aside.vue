@@ -1,109 +1,108 @@
 <template>
   <div class="aside">
-    <ul class="aside-ul">
-      <li class="aside-li">
-        <h4 class="title" :class="['active']" @click="onCancleActive($event)">菜单一</h4>
-        <ul class="li-ul">
-          <li class="li-li" @click="hasActive($event)">菜单二</li>
-          <li class="li-li" @click="hasActive($event)">菜单二</li>
-          <li class="li-li" @click="hasActive($event)">菜单二</li>
-          <li class="li-li" @click="hasActive($event)">菜单二</li>
+    <div class="close-aside">
+      <i :class="['iconfont','large-size',{'icon-menu':hide,'icon-close':!hide}]"
+         @click="toggleShow"></i>
+    </div>
+    <transition name="hide">
+      <div class="aside-list" v-show="!hide">
+        <ul class="list-ul">
+          <li class="list-li active" v-for="link in menuList" :key="link.id">
+            <div class="link-box">
+              <i :class="[link.iconfont]" :style="{fontSize:'18px'}"></i>
+              <router-link :to="/menu/+link.title" class="index-link">{{link.title}}</router-link>
+            </div>
+          </li>
         </ul>
-      </li>
-      <li class="aside-li">
-        <h4 class="title" @click="onCancleActive($event)">菜单一</h4>
-        <ul class="li-ul hide">
-          <li class="li-li" @click="hasActive($event)">菜单二</li>
-          <li class="li-li" @click="hasActive($event)">菜单二</li>
-          <li class="li-li" @click="hasActive($event)">菜单二</li>
-          <li class="li-li" @click="hasActive($event)">菜单二</li>
-        </ul>
-      </li>
-    </ul>
+      </div>
+    </transition>
   </div>
 </template>
-
 <script>
 export default {
-  name: "asider",
+  name: "my-aside",
   data() {
-    return {}
+    return {
+      hide: false,
+      menuList: []
+    }
+  },
+  created() {
+    this.getMenuList();
   },
   methods: {
-    onCancleActive(e) {
-      if (e.target.classList.contains("active")) {
-        e.target.classList.remove("active");
-        e.target.nextSibling.classList.add("hide")
-        let len = e.target.nextSibling.childNodes.length
-        for (let i = 0; i < len; i++) {
-          if (e.target.nextSibling.childNodes[i].classList.contains("active")) {
-            e.target.nextSibling.childNodes[i].classList.remove("active")
-          }
-        }
-      } else {
-        e.target.classList.add("active");
-        e.target.nextSibling.classList.remove("hide")
-      }
+    toggleShow() {
+      this.hide = !this.hide;
     },
-    hasActive(e) {
-      let liLis = document.querySelectorAll(".li-li");
-      let len = liLis.length;
-      for (let i = 0; i < len; i++) {
-        liLis[i].classList.contains('active') && liLis[i].classList.remove('active');
-      }
-      e.target.classList.add('active')
+    async getMenuList() {
+      let {data} = await this.$axios.get("http://www.qgy.com/getMenuList.php");
+      this.menuList = data;
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .aside {
-  .aside-ul {
-    list-style: none;
-    user-select: none;
-    text-align: center;
+  position: relative;
 
-    .aside-li {
-      .title {
-        margin: 0 0 5px;
-        height: 30px;
-        line-height: 30px;
-        padding: 10px 0;
-        cursor: pointer;
+
+  .close-aside {
+    padding: 3px 5px;
+    border-bottom: 3px solid #ccc;
+    .large-size {
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 0 5px rgb(149, 165, 166);
+    }
+  }
+
+  .aside-list {
+    .list-ul {
+      list-style: none;
+      padding: 0;
+
+      .list-li {
+        padding: 10px 5px;
+        margin: 5px 0;
+        border: 3px solid transparent;
 
         &.active {
-          background-color: rgb(39,174,96);
-          color: #fff;
-          -webkit-border-radius: 10px;
-          -moz-border-radius: 10px;
-          border-radius: 10px;
-        }
-      }
+          border: 3px solid #ccc;
+          background-color: rgba(46, 204, 113, .5);
 
-      .li-ul {
-        list-style: none;
-        user-select: none;
-        padding: 0;
-
-        &.hide {
-          display: none;
-        }
-
-        .li-li {
-          height: 40px;
-          line-height: 40px;
-
-          &.active {
-            background-color: rgba(46,204,113,.8);
+          > .index-link {
             color: #fff;
-            -webkit-border-radius: 10px;
-            -moz-border-radius: 10px;
-            border-radius: 10px;
           }
         }
+
+        .link-box {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .index-link {
+            text-decoration: none;
+            color: #333;
+            text-align: center;
+            font-size: 18px;
+            flex-grow: 1;
+            flex-shrink: 0;
+            &:hover {
+              color: #666;
+            }
+          }
+        }
+
       }
     }
   }
+}
+
+.hide-enter, .hide-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.hide-enter-active, .hide-leave-active {
+  transition: all 0.5s;
 }
 </style>

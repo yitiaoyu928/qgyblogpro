@@ -8,16 +8,17 @@ import register from "../components/register/register.vue";
 import articleInfo from "@/components/article-info/articleInfo";
 import editUser from "@/components/user-info/user-info.vue";
 import leaveWord from "@/components/leave-list/leave-list.vue";
+import MenuClassify from "@/components/menu-classify/menu-classify.vue";
 
 let routes = [
   {
     path: '/',
     component: AppIndex,
-    alias: "/index",
     children: [
       {
         path: "/",
-        component: Content
+        component: Content,
+        alias:"/menu/HOME"
       },
       {
         path: "/info/:id",
@@ -31,6 +32,10 @@ let routes = [
       {
         path: "/leaveword",
         component: leaveWord
+      },
+      {
+        path: "/menu/:id",
+        component: MenuClassify
       }
     ]
   },
